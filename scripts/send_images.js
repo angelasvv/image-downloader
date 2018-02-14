@@ -10,25 +10,29 @@
       return [].slice.apply(document.querySelectorAll('img, a, [style]')).map(imageDownloader.extractImageFromElement);
     },
 
-    extractImagesFromStyles: function () {
-      var imagesFromStyles = [];
-      for (var i = 0; i < document.styleSheets.length; i++) {
-        var cssRules = document.styleSheets[i].cssRules;
-        if (cssRules) {
-          for (var j = 0; j < cssRules.length; j++) {
-            var style = cssRules[j].style;
-            if (style && style.backgroundImage) {
-              var url = imageDownloader.extractURLFromStyle(style.backgroundImage);
-              if (imageDownloader.isImageURL(url)) {
-                imagesFromStyles.push(url);
-              }
-            }
-          }
-        }
-      }
+		extractImagesFromStyles: function () {
+			var imagesFromStyles = [];
+			for (var cssFile in document.styleSheets) {
+				if (!document.styleSheets[cssFile].hasOwnProperty('cssRules'))
+					continue;
+				for (var i = 0; i < document.styleSheets.length; i++) {
+					var cssRules = document.styleSheets[i].cssRules;
+					if (cssRules) {
+						for (var j = 0; j < cssRules.length; j++) {
+							var style = cssRules[j].style;
+							if (style && style.backgroundImage) {
+								var url = imageDownloader.extractURLFromStyle(style.backgroundImage);
+								if (imageDownloader.isImageURL(url)) {
+									imagesFromStyles.push(url);
+								}
+							}
+						}
+					}
+				}
+			}
 
-      return imagesFromStyles;
-    },
+			return imagesFromStyles;
+		},
 
     extractImageFromElement: function (element) {
       if (element.tagName.toLowerCase() === 'img') {
